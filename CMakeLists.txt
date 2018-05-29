@@ -19,3 +19,7 @@ target_link_libraries(${PROJECT_NAME}_1_3 glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRAR
 file(GLOB LESSON_1_4_SRC "lessons/1_4/src/main/cpp/*.cpp" "lessons/1_4/src/main/cpp/*.h")
 add_executable(${PROJECT_NAME}_1_4 ${LESSON_1_4_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_1_4 glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
+
+file(GLOB LESSON_1_5_SRC "lessons/1_5/src/main/cpp/*.cpp" "lessons/1_5/src/main/cpp/*.h")
+add_executable(${PROJECT_NAME}_1_5 ${LESSON_1_5_SRC} ${VENDOR_SRC})
+target_link_libraries(${PROJECT_NAME}_1_5 glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
