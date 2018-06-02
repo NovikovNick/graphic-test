@@ -7,3 +7,6 @@
 [submodule "lib/glad"]
 	path = lib/glad
 	url = https://github.com/Dav1dde/glad
+[submodule "lib/soil"]
+	path = lib/soil
+	url = https://github.com/kbranigan/Simple-OpenGL-Image-Library.git
