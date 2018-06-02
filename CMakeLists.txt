@@ -37,3 +37,6 @@ file(GLOB LESSON_1_7_SRC "lessons/1_7/src/main/cpp/*.cpp" "lessons/1_7/src/main/
 add_executable(${PROJECT_NAME}_1_7 ${LESSON_1_7_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_1_7 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
 
+file(GLOB LESSON_1_8_SRC "lessons/1_8/src/main/cpp/*.cpp" "lessons/1_8/src/main/cpp/*.h")
+add_executable(${PROJECT_NAME}_1_8 ${LESSON_1_8_SRC} ${VENDOR_SRC})
+target_link_libraries(${PROJECT_NAME}_1_8 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
