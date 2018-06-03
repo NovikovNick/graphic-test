@@ -8,6 +8,13 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(lib/glfw)
 add_subdirectory(lib/soil)
 
+option(BUILD_BULLET2_DEMOS OFF)
+option(BUILD_CPU_DEMOS OFF)
+option(BUILD_EXTRAS OFF)
+option(BUILD_OPENGL3_DEMOS OFF)
+option(BUILD_UNIT_TESTS OFF)
+add_subdirectory(lib/bullet)
+
 file(GLOB VENDOR_SRC lib/glad/src/glad.c)
 
 include_directories(
@@ -15,6 +22,7 @@ include_directories(
         lib/glm
         lib/glad/include
         lib/soil/src
+        lib/bullet/src
 )
 
 file(GLOB LESSON_1_3_SRC "lessons/1_3/src/main/cpp/*.cpp" "lessons/1_3/src/main/cpp/*.h")
@@ -44,3 +52,7 @@ target_link_libraries(${PROJECT_NAME}_1_8 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_L
 file(GLOB LESSON_1_9_SRC "lessons/1_9/src/main/cpp/*.cpp" "lessons/1_9/src/main/cpp/*.h")
 add_executable(${PROJECT_NAME}_1_9 ${LESSON_1_9_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_1_9 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
+
+file(GLOB SAMPLE_1_SRC "samples/bullet/src/main/cpp/*.cpp" "samples/bullet/src/main/cpp/*.h")
+add_executable(${PROJECT_NAME}_SAMPLE_1 ${SAMPLE_1_SRC} ${VENDOR_SRC})
+target_link_libraries(${PROJECT_NAME}_SAMPLE_1 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
