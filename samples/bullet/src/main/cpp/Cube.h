@@ -11,14 +11,27 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#include <btBulletDynamicsCommon.h>
+
 namespace Graphic {
 
     class Cube {
     private:
-        GLuint VAO, VBO, texture, side;
+        GLuint VAO, VBO, texture;
+        float side;
         glm::vec3 position;
+
+        btCollisionShape* ptrShape;
+        btRigidBody* ptrRigidBody;
+        btDefaultMotionState* ptrMotionState;
+
     public:
-        Cube(const int &side, const int &x, const int &y, const int &z);
+
+        btCollisionShape *getGroundShape() const;
+
+        btRigidBody *getBody() const;
+
+        Cube(const float &side, const int &x, const int &y, const int &z, const float &mass);
 
         virtual ~Cube();
 

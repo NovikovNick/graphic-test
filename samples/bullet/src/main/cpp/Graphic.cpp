@@ -24,6 +24,13 @@ GLFWwindow *Graphic::initGLFW(const GLuint &width, const GLuint &height) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//avoid old function
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
+
+    /*const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);*/
+
     // Create a GLFWwindow object that we can use for GLFW's functions
     GLFWwindow *window_ptr = glfwCreateWindow(width, height, "LearnOpenGL", nullptr, nullptr);
     if (window_ptr == nullptr) {
