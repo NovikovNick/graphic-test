@@ -7,11 +7,10 @@
 #include <iostream>
 #include <list>
 #include <btBulletDynamicsCommon.h>
+#include <BulletSoftBody/btSoftBodyInternals.h>
 
 
-#include "Graphic.h"
-#include "Cube.h"
-#include "Camera.h"
+#include "include/Graphic.h"
 
 GLFWwindow *window;
 bool isWireFrameState = false;
@@ -30,7 +29,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 void do_movement();
 
-Graphic::Camera camera = Graphic::Camera(0.0, 2.0, 0.0f, 45.0f, WIDTH, HEIGHT, 1000.0f);
+Graphic::Camera camera = Graphic::Camera(glm::vec3(0.0f, 5.0f, 11.0f));
 
 GLfloat deltaTime = 0.0f;    // Время, прошедшее между последним и текущим кадром
 GLfloat lastFrame = 0.0f;    // Время вывода последнего кадра
@@ -62,32 +61,43 @@ int main() {
 
     glViewport(0, 0, WIDTH, HEIGHT);
 
-    GLuint shaderProgram = glCreateProgram();
-    Graphic::registerShader(
-            shaderProgram,
-            "..\\lessons\\1_8\\src\\main\\glsl\\shader.vs.glsl",
-            "..\\lessons\\1_8\\src\\main\\glsl\\shader.frag.glsl"
-    );
+    Graphic::Cube model = Graphic::Cube();
 
-    GLuint texture = Graphic::loadTexture("..\\assets\\cube.jpg");
-    std::list<Graphic::Cube> list;
-    for (int i = -40; i < 40; ++i) {
-        for (int z = -40; z < 40; ++z) {
-            Graphic::Cube *val = new Graphic::Cube{1., i, 0, z, 0.};
-            val->setTexture(texture);
-            dynamicsWorld->addRigidBody(val->getBody());
+    std::list<Graphic::GameObject> list;
+    for (float z = -12; z < 12; ++z) {
+        for (int x = -12; x < 12; ++x) {
+            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(x, 0, z), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(object.ptrRigidBody);
+            list.push_back(object);
 
-            list.push_back(*val);
+            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(x, 12, z), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(top.ptrRigidBody);
+            list.push_back(top);
         }
     }
-    for (float p = 1, size = 4; p < 4; ++p,size/=2) {
-        for (int j = 0; j < pow(4, p); ++j){
-            Graphic::Cube *val = new Graphic::Cube{size, 0, static_cast<int>(30 - size * 4), -20, 1.};
-            val->setTexture(texture);
-            dynamicsWorld->addRigidBody(val->getBody());
-            list.push_back(*val);
+    for (float y = 1; y < 12; ++y) {
+        for (int x = -12; x < 12; ++x) {
+            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(x, y, -12), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(object.ptrRigidBody);
+            list.push_back(object);
+
+            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(x, y, 12), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(top.ptrRigidBody);
+            list.push_back(top);
         }
     }
+    for (float y = 1; y < 12; ++y) {
+        for (int z = -12; z < 12; ++z) {
+            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(-12, y, z), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(object.ptrRigidBody);
+            list.push_back(object);
+
+            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(12, y, z), 1.0f, 0.0f);
+            dynamicsWorld->addRigidBody(top.ptrRigidBody);
+            list.push_back(top);
+        }
+    }
+
 
 
     // Game loop
@@ -108,23 +118,13 @@ int main() {
         glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-
-        camera.render(shaderProgram);
 
         dynamicsWorld->stepSimulation(deltaTime);
 
-        std::list<Graphic::Cube>::iterator it;
+        std::list<Graphic::GameObject>::iterator it;
         for (it = list.begin(); it != list.end(); ++it) {
-            btRigidBody* body = btRigidBody::upcast(it->getBody());
 
-            if (body && body->getMotionState()){
-                btTransform trans;
-                body->getMotionState()->getWorldTransform(trans);
-                it->translate(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
-            }
-
-            it->render(shaderProgram);
+            it->render(camera);
         }
 
         // Swap the screen buffers
@@ -167,19 +167,34 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 void do_movement() {
     if (keys[GLFW_KEY_W])
-        camera.moveTo(Graphic::Direction::FORWARD, deltaTime);
+        camera.moveTo(Graphic::Camera_Movement::FORWARD, deltaTime);
     if (keys[GLFW_KEY_S])
-        camera.moveTo(Graphic::Direction::BACK, deltaTime);
+        camera.moveTo(Graphic::Camera_Movement::BACKWARD, deltaTime);
     if (keys[GLFW_KEY_A])
-        camera.moveTo(Graphic::Direction::LEFT, deltaTime);
+        camera.moveTo(Graphic::Camera_Movement::LEFT, deltaTime);
     if (keys[GLFW_KEY_D])
-        camera.moveTo(Graphic::Direction::RIGHT, deltaTime);
+        camera.moveTo(Graphic::Camera_Movement::RIGHT, deltaTime);
 }
 
+
+bool firstMouse = true;
+GLfloat lastX;
+GLfloat lastY;
+
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-    camera.lookAt(xpos, ypos);
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+    camera.lookAt(xoffset, yoffset);
 }
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-    camera.scroll(xoffset, yoffset);
+    camera.zoom((GLfloat) yoffset);
 }

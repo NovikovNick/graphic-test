@@ -1,6 +1,8 @@
 //
-// Created by NickNovikov on 28.05.2018.
+// Created by NickNovikov on 07.06.2018.
 //
+
+
 
 #include <string>
 #include <fstream>
@@ -11,7 +13,7 @@
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
 
-#include "Graphic.h"
+#include "Util.h"
 
 using namespace Graphic;
 using namespace std;

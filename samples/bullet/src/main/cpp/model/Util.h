@@ -1,14 +1,15 @@
 //
-// Created by NickNovikov on 28.05.2018.
+// Created by NickNovikov on 07.06.2018.
 //
 
-#ifndef GRAPHIC_H
-#define GRAPHIC_H
+#ifndef LESSONS_UTIL_H
+#define LESSONS_UTIL_H
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 namespace Graphic {
@@ -42,4 +43,5 @@ namespace Graphic {
 
 }
 
-#endif //GRAPHIC_H
+
+#endif //LESSONS_UTIL_H

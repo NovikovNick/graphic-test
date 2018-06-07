@@ -53,6 +53,6 @@ file(GLOB LESSON_1_9_SRC "lessons/1_9/src/main/cpp/*.cpp" "lessons/1_9/src/main/
 add_executable(${PROJECT_NAME}_1_9 ${LESSON_1_9_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_1_9 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
 
-file(GLOB SAMPLE_1_SRC "samples/bullet/src/main/cpp/*.cpp" "samples/bullet/src/main/cpp/*.h")
+file(GLOB SAMPLE_1_SRC "samples/bullet/src/main/cpp/**/*.cpp" "samples/bullet/src/main/cpp/**/*.h" "samples/bullet/src/main/cpp/*.cpp" "samples/bullet/src/main/cpp/*.h")
 add_executable(${PROJECT_NAME}_SAMPLE_1 ${SAMPLE_1_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_SAMPLE_1 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})

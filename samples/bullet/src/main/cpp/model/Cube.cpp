@@ -1,15 +1,29 @@
 //
-// Created by NickNovikov on 03.06.2018.
+// Created by NickNovikov on 05.06.2018.
 //
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+
+#include <btBulletDynamicsCommon.h>
+
+#include "Util.h"
 #include "Cube.h"
 
-Graphic::Cube::Cube(const float &side, const int &x, const int &y, const int &z, const float &m)
-        : side(side),
-          position(glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)))  {
+Graphic::Cube::Cube(float side) : side(side){
 
+    shaderProgram = glCreateProgram();
+    Graphic::registerShader(
+            shaderProgram,
+            "..\\lessons\\1_8\\src\\main\\glsl\\shader.vs.glsl",
+            "..\\lessons\\1_8\\src\\main\\glsl\\shader.frag.glsl"
+    );
 
-    //texture = Graphic::loadTexture("..\\assets\\cube.jpg");
-
+    texture = Graphic::loadTexture("..\\assets\\cube.jpg");
+    
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
 
@@ -59,7 +73,7 @@ Graphic::Cube::Cube(const float &side, const int &x, const int &y, const int &z,
             -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
 // 3. Устанавливаем указатели на вершинные атрибуты
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid *) 0);
@@ -68,43 +82,22 @@ Graphic::Cube::Cube(const float &side, const int &x, const int &y, const int &z,
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+};
 
+void Graphic::Cube::render(Graphic::Camera &camera, glm::vec3 position){
 
+    glUseProgram(shaderProgram);
 
+    glm::mat4 view, projection;
+    view = camera.GetViewMatrix();
+    GLfloat width = 1024.0f;
+    GLfloat height = 768.0f;
+    GLfloat range = 1000.0f;
+    projection = glm::perspective(45.0f, width / height, 0.1f, range);
 
-    {
-        btScalar s = btScalar(side / 2);
-        ptrShape = new btBoxShape(btVector3(s, s, s));
-
-        btTransform groundTransform;
-        groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(x, y, z));
-
-        btScalar mass(m);
-
-        //rigidbody is dynamic if and only if mass is non zero, otherwise static
-        bool isDynamic = (mass != 0.f);
-
-        btVector3 localInertia(0, 0, 0);
-        if (isDynamic)
-            ptrShape->calculateLocalInertia(mass, localInertia);
-
-        //using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-
-        ptrMotionState = new btDefaultMotionState(groundTransform);
-
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, ptrMotionState, ptrShape, localInertia);
-        ptrRigidBody = new btRigidBody(rbInfo);
-    }
-
-}
-
-void Graphic::Cube::translate(const glm::vec3 &translate) {
-    position = translate;
-}
-
-void Graphic::Cube::render(const GLuint &shaderProgram) {
-
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture1"), 0);
@@ -117,24 +110,6 @@ void Graphic::Cube::render(const GLuint &shaderProgram) {
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
-}
 
-Graphic::Cube::~Cube() {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    delete ptrShape;
-    delete ptrMotionState;
-    delete ptrRigidBody;
-}
 
-void Graphic::Cube::setTexture(const GLuint &refTexture){
-    texture = refTexture;
-}
-
-btCollisionShape *Graphic::Cube::getGroundShape() const {
-    return ptrShape;
-}
-
-btRigidBody *Graphic::Cube::getBody() const {
-    return ptrRigidBody;
-}
+};
