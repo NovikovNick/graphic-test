@@ -11,5 +11,6 @@
 #include "../model/Camera.h"
 #include "../model/Util.h"
 #include "../model/GameObject.h"
+#include "../model/Scene.h"
 
 #endif //LESSONS_GRAPHIC_H

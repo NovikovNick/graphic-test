@@ -9,7 +9,7 @@
 
 Graphic::GameObject::GameObject(Cube &model, glm::vec3 position, const float &side, const float &m) : model(model), position(position){
 
-    btScalar s = btScalar(side / 2);
+    btScalar s = btScalar(side / 2)+0.001f;
     ptrShape = new btBoxShape(btVector3(s, s, s));
 
     btTransform groundTransform;

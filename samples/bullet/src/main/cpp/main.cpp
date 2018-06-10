@@ -17,7 +17,7 @@ bool isWireFrameState = false;
 
 //it is better to use GL primitive type instead predefined
 //const GLuint WIDTH =  1920, HEIGHT = 1080;
-const GLuint WIDTH =  1080, HEIGHT = 768;
+const GLuint WIDTH = 1080, HEIGHT = 768;
 
 bool keys[1024];
 
@@ -29,7 +29,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 void do_movement();
 
-Graphic::Camera camera = Graphic::Camera(glm::vec3(0.0f, 5.0f, 11.0f));
+Graphic::Camera camera = Graphic::Camera(glm::vec3(0.0f, 2.0f, 17.0f));
 
 GLfloat deltaTime = 0.0f;    // Время, прошедшее между последним и текущим кадром
 GLfloat lastFrame = 0.0f;    // Время вывода последнего кадра
@@ -37,15 +37,11 @@ GLfloat lastFrame = 0.0f;    // Время вывода последнего к�
 int main() {
 
     ///START INIT BULLET////
-    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    btDefaultCollisionConfiguration *collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher *dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    btBroadphaseInterface *overlappingPairCache = new btDbvtBroadphase();
+    btSequentialImpulseConstraintSolver *solver = new btSequentialImpulseConstraintSolver;
+    btDiscreteDynamicsWorld *dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     dynamicsWorld->setGravity(btVector3(0, -10, 0));
     ///END INIT BULLET////
 
@@ -64,46 +60,42 @@ int main() {
     Graphic::Cube model = Graphic::Cube();
 
     std::list<Graphic::GameObject> list;
-    for (float z = -12; z < 12; ++z) {
-        for (int x = -12; x < 12; ++x) {
-            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(x, 0, z), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(object.ptrRigidBody);
-            list.push_back(object);
 
-            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(x, 12, z), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(top.ptrRigidBody);
-            list.push_back(top);
-        }
-    }
-    for (float y = 1; y < 12; ++y) {
-        for (int x = -12; x < 12; ++x) {
-            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(x, y, -12), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(object.ptrRigidBody);
-            list.push_back(object);
+    Graphic::Scene scene = Graphic::Scene("..\\assets\\scene.txt");
 
-            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(x, y, 12), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(top.ptrRigidBody);
-            list.push_back(top);
-        }
-    }
-    for (float y = 1; y < 12; ++y) {
-        for (int z = -12; z < 12; ++z) {
-            Graphic::GameObject object = Graphic::GameObject(model, glm::vec3(-12, y, z), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(object.ptrRigidBody);
-            list.push_back(object);
-
-            Graphic::GameObject top = Graphic::GameObject(model, glm::vec3(12, y, z), 1.0f, 0.0f);
-            dynamicsWorld->addRigidBody(top.ptrRigidBody);
-            list.push_back(top);
-        }
-    }
+    for (auto coord : scene.getCoord()) {
+        Graphic::GameObject object = Graphic::GameObject(
+                model,
+                glm::vec3(coord[0], coord[1], coord[2]),
+                1.0f,
+                0.0f
+        );
+        dynamicsWorld->addRigidBody(object.ptrRigidBody);
+        list.push_back(object);
+    };
 
 
 
+    int sec = 0;
     // Game loop
     while (!glfwWindowShouldClose(window)) {
 
         GLfloat currentFrame = glfwGetTime();
+
+        if(sec < static_cast<int>(currentFrame)){
+          sec = static_cast<int>(currentFrame);
+          std::cout << sec << std::endl;
+
+          Graphic::GameObject object = Graphic::GameObject(
+                    model,
+                    glm::vec3(0, 20, 0),
+                    1.0f,
+                    1.0f
+            );
+            dynamicsWorld->addRigidBody(object.ptrRigidBody);
+            list.push_back(object);
+        }
+
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
