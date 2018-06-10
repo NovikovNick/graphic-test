@@ -10,3 +10,6 @@
 [submodule "lib/soil"]
 	path = lib/soil
 	url = https://github.com/kbranigan/Simple-OpenGL-Image-Library.git
+[submodule "lib/bullet"]
+	path = lib/bullet
+	url = https://github.com/bulletphysics/bullet3.git
