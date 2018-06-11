@@ -56,3 +56,7 @@ target_link_libraries(${PROJECT_NAME}_1_9 SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_L
 file(GLOB SAMPLE_1_SRC "samples/bullet/src/main/cpp/**/*.cpp" "samples/bullet/src/main/cpp/**/*.h" "samples/bullet/src/main/cpp/*.cpp" "samples/bullet/src/main/cpp/*.h")
 add_executable(${PROJECT_NAME}_SAMPLE_1 ${SAMPLE_1_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_SAMPLE_1 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
+
+file(GLOB LESSON_2_1_SRC "lessons/2_1/src/main/cpp/**/*.cpp" "lessons/2_1/src/main/cpp/**/*.h" "lessons/2_1/src/main/cpp/*.cpp" "lessons/2_1/src/main/cpp/*.h")
+add_executable(${PROJECT_NAME}_2_1 ${LESSON_2_1_SRC} ${VENDOR_SRC})
+target_link_libraries(${PROJECT_NAME}_2_1 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
