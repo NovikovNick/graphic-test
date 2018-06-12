@@ -68,3 +68,7 @@ target_link_libraries(${PROJECT_NAME}_2_2 BulletDynamics BulletCollision LinearM
 file(GLOB LESSON_2_3_SRC "lessons/2_3/src/main/cpp/**/*.cpp" "lessons/2_3/src/main/cpp/**/*.h" "lessons/2_3/src/main/cpp/*.cpp" "lessons/2_3/src/main/cpp/*.h")
 add_executable(${PROJECT_NAME}_2_3 ${LESSON_2_3_SRC} ${VENDOR_SRC})
 target_link_libraries(${PROJECT_NAME}_2_3 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
+
+file(GLOB LESSON_2_4_SRC "lessons/2_4/src/main/cpp/**/*.cpp" "lessons/2_4/src/main/cpp/**/*.h" "lessons/2_4/src/main/cpp/*.cpp" "lessons/2_4/src/main/cpp/*.h")
+add_executable(${PROJECT_NAME}_2_4 ${LESSON_2_4_SRC} ${VENDOR_SRC})
+target_link_libraries(${PROJECT_NAME}_2_4 BulletDynamics BulletCollision LinearMath SOIL glfw ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
