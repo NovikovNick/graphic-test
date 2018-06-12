@@ -45,7 +45,8 @@ Graphic::Scene::Scene(const std::string &filepath) {
 void Graphic::Scene::render(Camera &camera, const float &step) {
     for (auto light : lights) {
         light.get()->render(camera);
-        light.get()->position = glm::vec3(sin(step*5)*2, 2, cos(step*5)*4);
+        light.get()->position = glm::vec3(0, 6, cos(step)*10);
+        light.get()->color = glm::vec3(sin(step)*0.5f, 0.5f, 0.5f);
     }
     for (auto obj : objects) obj.get()->render(camera, lights);
 }
@@ -64,14 +65,14 @@ void initModels(std::map<std::string, std::shared_ptr<Graphic::Model>> &models){
 
     GLuint simpleShader = glCreateProgram();
     Graphic::registerShader(simpleShader,
-                            "..\\lessons\\2_2\\src\\main\\glsl\\model\\cube\\shader.vs.glsl",
-                            "..\\lessons\\2_2\\src\\main\\glsl\\model\\cube\\shader.frag.glsl"
+                            "..\\lessons\\2_3\\src\\main\\glsl\\model\\cube\\shader.vs.glsl",
+                            "..\\lessons\\2_3\\src\\main\\glsl\\model\\cube\\shader.frag.glsl"
     );
 
     GLuint lightShader = glCreateProgram();
     Graphic::registerShader(lightShader,
-                            "..\\lessons\\2_2\\src\\main\\glsl\\model\\light\\shader.vs.glsl",
-                            "..\\lessons\\2_2\\src\\main\\glsl\\model\\light\\shader.frag.glsl"
+                            "..\\lessons\\2_3\\src\\main\\glsl\\model\\light\\shader.vs.glsl",
+                            "..\\lessons\\2_3\\src\\main\\glsl\\model\\light\\shader.frag.glsl"
     );
 
     GLuint simpleCubeTexture = Graphic::loadTexture("..\\assets\\cube.jpg");

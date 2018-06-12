@@ -92,18 +92,27 @@ void Graphic::Cube::render(Camera &camera, std::list<std::shared_ptr<Light>> lig
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform3f(glGetUniformLocation(shaderProgram, "objectColor"), 1.0f, 0.5f, 0.31f);
-    glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"),
-                lights.front().get()->color.x,
-                lights.front().get()->color.y,
-                lights.front().get()->color.z);
+
+    auto light = lights.front().get();//get first
+
     glUniform3f(glGetUniformLocation(shaderProgram, "lightPos"),
-                lights.front().get()->position.x,
-                lights.front().get()->position.y,
-                lights.front().get()->position.z);
+                light->position.x,
+                light->position.y,
+                light->position.z);
     glUniform3f(glGetUniformLocation(shaderProgram, "viewPos"),
                 camera.Position.x,
                 camera.Position.y,
                 camera.Position.z);
+
+    glUniform3f(glGetUniformLocation(shaderProgram, "material.ambient"),  0.8f, 0.8f, 0.8f);
+    glUniform3f(glGetUniformLocation(shaderProgram, "material.diffuse"),  1.0f, 0.5f, 0.31f);
+    glUniform3f(glGetUniformLocation(shaderProgram, "material.specular"), 0.5f, 0.5f, 0.5f);
+    glUniform1f(glGetUniformLocation(shaderProgram, "material.shininess"), 32.0f);
+
+    glUniform3f(glGetUniformLocation(shaderProgram, "light.ambient"), light->color.x, light->color.y, light->color.z);
+    glUniform3f(glGetUniformLocation(shaderProgram, "light.diffuse"),  0.5f, 0.5f, 0.5f); // darken the light a bit to fit the scene
+    glUniform3f(glGetUniformLocation(shaderProgram, "light.specular"), 1.0f, 1.0f, 1.0f);
+
 
     /*glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
